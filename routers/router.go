@@ -8,7 +8,9 @@ import (
 func init() {
 	//beego.Router("/", &controllers.IndexController{})
 	//beego.Router("/editor", &controllers.EditorController{})
-	beego.Include(&controllers.IndexController{})
+	beego.Include(
+		&controllers.UserController{},
+		&controllers.IndexController{})
 	beego.Router("/getdata", &controllers.TestContronller{}, "get:GetData")
 	beego.ErrorController(&controllers.ErrorController{})
 }
