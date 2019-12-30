@@ -1,8 +1,10 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
 	"bee_hello/models"
+	"bee_hello/syserrors"
+	"errors"
+	"github.com/astaxie/beego"
 )
 
 const SESSION_USER_KEY = "SESSION_USER_KEY"
@@ -23,8 +25,9 @@ type BaseController struct {
 func (ctx *BaseController) Prepare() {
 	// 验证用户是否登陆，判断session中是否存在用户，存在就已经登陆，不存在就没有登陆。
 	ctx.IsLogin = false
-	tu := ctx.GetSession(SESSION_USER_KEY)
+	tu := ctx.GetSession(SESSION_USER_KEY) //从session中读出这个key, 没有的时候是 nil
 	if tu != nil {
+		//这里要判断类型，
 		if u, ok := tu.(models.User); ok {
 			ctx.User = u
 			ctx.Data["User"] = u
@@ -42,11 +45,15 @@ func (ctx *BaseController) Prepare() {
 	}
 }
 
-func (ctx *BaseController) GetMustString(email string, info string) (string) {
+func (ctx *BaseController) GetMustString(key string, msg string) string {
+	email := ctx.GetString(key, "")
+	if len(email) == 0 {
+		ctx.Abort500(errors.New(msg))
+	}
 	return email
 }
 
-type ResultJsonValue  struct {
+type ResultJsonValue struct {
 	Code   int         `json:"code"`
 	Msg    string      `json:"msg"`
 	Action string      `json:"action,omitempty"`
@@ -60,9 +67,18 @@ func (ctx *BaseController) JSONOk(msg string, actions ...string) {
 		action = actions[0]
 	}
 	ctx.Data["json"] = &ResultJsonValue{
-		Code : 0,
-		Msg :msg,
+		Code:   0,
+		Msg:    msg,
 		Action: action,
 	}
 	ctx.ServeJSON()
+}
+
+/**
+必须登陆
+*/
+func (ctx *BaseController) MustLogin() {
+	if !ctx.IsLogin {
+		ctx.Abort500(syserrors.NoUserError{}) //如果没有登陆，则抛出没有用户的 error
+	}
 }

@@ -3,6 +3,7 @@ package controllers
 import (
 	"bee_hello/models"
 	"bee_hello/syserrors"
+	"strings"
 )
 
 type UserController struct {
@@ -25,7 +26,25 @@ func (c *UserController) Login() {
 	c.SetSession(SESSION_USER_KEY, user)
 	c.JSONOk("登陆成功", "/")
 }
+
 func (ctx *BaseController) Abort500(err error) {
 	ctx.Data["err"] = err
 	ctx.Abort("500")
+}
+
+//	@router /logout [get]
+func (c *UserController) Logout() {
+	c.MustLogin()                  // 必须登陆
+	c.DelSession(SESSION_USER_KEY) //删除session
+	c.Redirect("/", 302)           //跳转路由
+
+}
+
+// @router /setting/editor [post]
+func (c *UserController) Editor() {
+	editor := c.GetMustString("editor", "default")
+	if !strings.EqualFold(editor, "markdown") {
+		editor = "default"
+	}
+
 }

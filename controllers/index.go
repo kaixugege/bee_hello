@@ -1,6 +1,5 @@
 package controllers
 
-
 type IndexController struct {
 	BaseController
 }
@@ -21,4 +20,14 @@ func (c *IndexController) GetMessage() {
 // @router /about [get]
 func (c *IndexController) GetAbout() {
 	c.TplName = "about.html"
+}
+
+// @router /user [get]
+func (c *IndexController) GetUser() {
+	c.TplName = "user.html"
+}
+
+// @touter /get [get]
+func (c *IndexController) GetReg() {
+	c.TplName = "reg.html"
 }

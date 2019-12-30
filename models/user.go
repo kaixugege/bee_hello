@@ -8,7 +8,7 @@ type User struct {
 	Email  string `gorm:"unique_index"`
 	Avatar string
 	Pwd    string
-	Role   int    `gorm:"default:1"` // 0 管理员 1正常用户
+	Role   int `gorm:"default:1"` // 0 管理员 1正常用户
 }
 
 func QueryUserByEmailAndPassword(email, password string) (*User, error) {
