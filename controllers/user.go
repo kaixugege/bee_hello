@@ -3,6 +3,7 @@ package controllers
 import (
 	"bee_hello/models"
 	"bee_hello/syserrors"
+	"fmt"
 	"strings"
 )
 
@@ -14,8 +15,9 @@ type UserController struct {
 func (c *UserController) Login() {
 	/*c.GetMustString(agr0,arg1 string ) 是在BaseController里面定义的，第一个参数获取请求的参数的键值对的key，请求后，
 	如key对于的value是空，就返回第二个参数*/
-	email := c.GetMustString("email", "邮箱不能为空！")
+	email := c.GetMustString("admin@admin.com", "邮箱不能为空！")
 	pwd := c.GetMustString("password", "密码不能为空！")
+	fmt.Println("email = ", email, "pwd = ", pwd)
 	var (
 		user *models.User
 		err  error

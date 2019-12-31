@@ -24,10 +24,11 @@ func (c *IndexController) GetAbout() {
 
 // @router /user [get]
 func (c *IndexController) GetUser() {
+	//fmt.Println(c.IsLogin)
 	c.TplName = "user.html"
 }
 
-// @touter /get [get]
+// @router /reg [get]
 func (c *IndexController) GetReg() {
 	c.TplName = "reg.html"
 }
