@@ -45,6 +45,9 @@ func (ctx *BaseController) Prepare() {
 	}
 }
 
+/**
+
+ */
 func (ctx *BaseController) GetMustString(key string, msg string) string {
 	email := ctx.GetString(key, "")
 	if len(email) == 0 {

@@ -4,6 +4,7 @@ import (
 	"bee_hello/models"
 	"bee_hello/syserrors"
 	"fmt"
+	"github.com/astaxie/beego/logs"
 	"strings"
 )
 
@@ -48,5 +49,18 @@ func (c *UserController) Editor() {
 	if !strings.EqualFold(editor, "markdown") {
 		editor = "default"
 	}
+}
 
+func init() {
+
+}
+
+// @router /reg [post]
+func (c *UserController) Reg() {
+	name := c.GetMustString("name", "昵称不能为空")
+	email := c.GetMustString("email", "邮箱不能为空！")
+	pwd1 := c.GetMustString("password", "密码不能为空！")
+	pwd2 := c.GetMustString("password2", "确认密码不能为空！")
+	fmt.Printf("POST Reg : name %s, email %s, pwd1 %s, pwd2", name, email, pwd1, pwd2)
+	logs.Alert("Reg : name %s, email %s, pwd1 %s, pwd2", name, email, pwd1, pwd2)
 }

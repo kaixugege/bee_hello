@@ -1,14 +1,16 @@
 package main
 
 import (
-	_ "bee_hello/routers"
-	_ "github.com/go-sql-driver/mysql" // import your used driver
-	_ "bee_hello/models"
-	"github.com/astaxie/beego"
-	"fmt"
-	"strings"
-	"encoding/gob"
 	"bee_hello/models"
+	_ "bee_hello/models"
+	_ "bee_hello/routers"
+	"encoding/gob"
+	"fmt"
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+	_ "github.com/go-sql-driver/mysql" // import your used driver
+	"os"
+	"strings"
 )
 
 func init() {
@@ -31,9 +33,31 @@ func main() {
 	//
 	//fmt.Println(o.Insert(profile))
 	//fmt.Println(o.Insert(user))
-
+	initLog()
 	initTemplate()
 	beego.Run()
+}
+func initLog() {
+	if err := os.MkdirAll("data/logs", 0777); err != nil {
+		beego.Error(err)
+		return
+	}
+
+	// 设置配置文件
+	//jsonConfig := `{
+	//    "filename" : "/logs/test.log", // 文件名
+	//    "maxlines" : 2000,       // 最大行
+	//    "maxsize"  : 10240       // 最大Size
+	//}`
+	//logs.SetLogger("file", jsonConfig) // 设置日志记录方式：本地文件记录
+
+	logs.SetLogger("file", `{"filename":"data/logs/lyblog.log","level":7,"maxlines":0,"maxsize":0,"daily":true,"maxdays":10}`)
+	logs.Async(1e3)
+	logs.SetLevel(logs.LevelDebug) // 设置日志写入缓冲区的等级
+	logs.EnableFuncCallDepth(true) // 输出log时能显示输出文件名和行号（非必须）
+
+	//logs.SetLogger(logs.AdapterFile,`{"filename":`+beego.AppConfig.String("log_path")+`"/project.log","level":7,"maxlines":0,"maxsize":0,"daily":true,"maxdays":10}`)
+	//logs.SetLogger(logs.AdapterFile,`{"filename":"`+beego.AppConfig.String("log_path")+`/project.log","level":7,"maxlines":0,"maxsize":0,"daily":true,"maxdays":10}`)
 }
 
 func initSession() {
