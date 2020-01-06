@@ -16,13 +16,17 @@ type NestPreparer interface {
 
 type BaseController struct {
 	beego.Controller
-
+	Dao     *models.DB
 	IsLogin bool        //标识  是否登录
 	User    models.User // 登录的用户
 }
 
 //  Prepare 方法是每次请求都要调用的
 func (ctx *BaseController) Prepare() {
+
+	// 将页面路径 保存到 Path变量里面
+	ctx.Data["Path"] = ctx.Ctx.Request.RequestURI
+	ctx.Dao = models.NewDB()
 	// 验证用户是否登陆，判断session中是否存在用户，存在就已经登陆，不存在就没有登陆。
 	ctx.IsLogin = false
 	tu := ctx.GetSession(SESSION_USER_KEY) //从session中读出这个key, 没有的时候是 nil
@@ -35,9 +39,6 @@ func (ctx *BaseController) Prepare() {
 		}
 	}
 	ctx.Data["IsLogin"] = ctx.IsLogin
-
-	// 将页面路径 保存到 Path变量里面
-	ctx.Data["Path"] = ctx.Ctx.Request.RequestURI
 
 	// 判断子类是否实现了NestPreparer接口，如果实现了就调用接口方法。
 	if app, ok := ctx.AppController.(NestPreparer); ok {

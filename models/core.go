@@ -1,16 +1,36 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"os"
 	"fmt"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"os"
 )
 
 var (
-	db gorm.DB
+	db *gorm.DB
 )
+
+type DB struct {
+	db *gorm.DB
+}
+
+func (db *DB) Begin() {
+	db.db = db.db.Begin()
+}
+
+func (db *DB) Rollback() {
+	db.db = db.db.Rollback()
+}
+
+func (db *DB) Commit() {
+	db.db = db.db.Commit()
+}
+
+func NewDB() *DB {
+	return &DB{db: db}
+}
 
 func init() {
 	// 创建data目录,0777代表文件权限

@@ -11,7 +11,7 @@
         }
 
         .layui-input-block {
-            margin-left: 80px;
+            margin-left: 40px;
         }
 
         @media screen and (max-width: 450px) {
@@ -19,6 +19,7 @@
                 margin: 0 0 10px 80px;
             }
         }
+
     </style>
 </head>
 <body class="lay-blog">
@@ -30,7 +31,32 @@
             <h4 class="item-title">
                 <p><i class="layui-icon layui-icon-speaker"></i>
                 {{.User.Name}},您已经登陆,是否<a href="/logout"><span>登出</span></a>？
-                </p></h4>
+                </p>
+            </h4>
+        {{if eq .User.Role 0}}
+        {{/*<h4 class="item-title">*/}}
+        {{/*<p>*/}}
+        {{/*<a id="changPwd" href="javacript:void(0);"><i*/}}
+        {{/*class="layui-icon layui-icon-edit">&#xe642;</i><span>修改密码</span></a>*/}}
+        {{/*</p>*/}}
+        {{/*</h4>*/}}
+            <h4 class="item-title">
+                <p>
+                    <a href="/note/new"><i class="layui-icon layui-icon-add-1">&#xe654;</i><span>新增文章</span></a>
+                </p>
+            </h4>
+            <h4 class="item-title">
+                <p>
+                    <label style="width: 120px;">文章编辑器 :</label>
+
+                    <input type="radio" name="editor" value="default"
+                           {{if eq.User.Editor "default"}}checked{{end}}  title="富文本">
+                    <span>富文本</span>
+                    <input type="radio" name="editor" value="markdown"
+                           {{if eq.User.Editor "markdown"}}checked{{end}} title="Markdown">
+                    <span>Markdown</span>
+            </h4>
+        {{end}}
         {{else}}
             <div class="item">
                 <div class="item-box">
@@ -38,8 +64,8 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">邮箱</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="email" required lay-verify="required"
-                                       placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+                                <input type="text" name="email" required lay-verify="required" placeholder="请输入邮箱"
+                                       autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -49,7 +75,6 @@
                                        placeholder="请输入密码"
                                        autocomplete="off" class="layui-input">
                             </div>
-
                         </div>
                         <div class="layui-form-item">
                             <div class="layui-input-block">
@@ -58,14 +83,13 @@
                             </div>
                         </div>
                     </form>
-
                 </div>
-
             </div>
         {{end}}
         </div>
     </div>
 </div>
+
 {{template "comm/footer.html" .}}
 <script>
     layui.use(['form', 'jquery', 'layer', 'sysn'], function () {
@@ -73,20 +97,19 @@
                 sysn = layui.sysn,
                 $ = layui.jquery,
                 layer = layui.layer;
-        //监听提交
-        form.on('submit(login)', function (fromdata) {
-            sysn.post("/login", fromdata.field)
-            // .setTimeout(5000)
+        $("input[name='editor']").change(function () {
+            changeEditor()
+        });
+
+        function changeEditor() {
+            var editor = $("input[name='editor']:checked").val();
+            sysn.post("/setting/editor", {editor: editor})
                     .success(function (data) {
                         layer.msg(data.msg);
-                        if (data.action) {
-                            setTimeout(function () {
-                                window.location.href = data.action;
-                            }, 300)
-                        }
+                        $(":radio[name='editor'][value='" + data.editor + "']").prop("checked", "checked");
                     }).run();
-            return false;
-        });
+        };
+
     });
 </script>
 </body>

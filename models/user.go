@@ -11,12 +11,13 @@ type User struct {
 	Role   int `gorm:"default:1"` // 0 管理员 1正常用户
 }
 
-func QueryUserByEmailAndPassword(email, password string) (*User, error) {
+func (db *DB) QueryUserByEmailAndPassword(email, password string) (User, error) {
 	var user User
-	if err := db.Model(&User{}).Where("email = ? and pwd = ?", email, password).Take(&user).Error; err != nil {
-		return nil, err
+	if err := db.db.Model(
+		&User{}).Where("email = ? and pwd = ?", email, password).Take(&user).Error; err != nil {
+		return user, err
 	}
-	return &user, nil
+	return user, nil
 }
 
 func QueryUserByName(name string) (user User, err error) {

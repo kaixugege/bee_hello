@@ -1,5 +1,7 @@
 package controllers
 
+import "github.com/astaxie/beego/logs"
+
 type IndexController struct {
 	BaseController
 }
@@ -30,5 +32,6 @@ func (c *IndexController) GetUser() {
 
 // @router /reg [get]
 func (c *IndexController) GetReg() {
+	logs.Alert("get :: Reg")
 	c.TplName = "reg.html"
 }

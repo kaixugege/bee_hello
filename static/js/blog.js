@@ -1,17 +1,17 @@
 /**
-
  @Name：layui.blog 闲言轻博客模块
  @Author：徐志文
  @License：MIT
  @Site：http://www.layui.com/template/xianyan/
 
  */
-layui.define(['element', 'form', 'laypage', 'jquery', 'laytpl'], function (exports) {
+layui.define(['element', 'form', 'laypage', 'jquery', 'laytpl', 'sysn'], function (exports) {
     var element = layui.element
         , form = layui.form
         , laypage = layui.laypage
         , $ = layui.jquery
-        , laytpl = layui.laytpl;
+        , laytpl = layui.laytpl
+        , sysn = layui.sysn;
 
 
     //statr 分页
@@ -83,6 +83,9 @@ layui.define(['element', 'form', 'laypage', 'jquery', 'laytpl'], function (expor
         }, 1000);
     }
 
+
+
+
     $(function () {
         $(".like").on('click', function () {
 
@@ -103,6 +106,27 @@ layui.define(['element', 'form', 'laypage', 'jquery', 'laytpl'], function (expor
             }
         });
     });
+
+
+
+    //登陆
+    form.on('submit(login)', function (fromdata) {
+        alert(123123123)
+        sysn.post("/login", fromdata.field)
+
+        // .setTimeout(5000)
+            .success(function (data) {
+                layer.msg(data.msg);
+                if (data.action) {
+                    setTimeout(function () {
+                        window.location.href = data.action;
+                    }, 300)
+                }
+            }).run();
+        return false;
+    });
+
+
 
     //end 评论的特效
 
