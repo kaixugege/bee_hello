@@ -1,6 +1,11 @@
 package models
 
-import "github.com/jinzhu/gorm"
+import (
+	"bee_hello/syserrors"
+	"errors"
+	"github.com/astaxie/beego/logs"
+	"github.com/jinzhu/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -13,11 +18,18 @@ type User struct {
 
 func (db *DB) QueryUserByEmailAndPassword(email, password string) (User, error) {
 	var user User
+	if db.db == nil {
+		logs.Debug("db.db=", nil)
+		return user, syserrors.NewError("DbError", errors.New("db error"))
+	}
 	if err := db.db.Model(
 		&User{}).Where("email = ? and pwd = ?", email, password).Take(&user).Error; err != nil {
 		return user, err
+	} else {
+
+		return user, nil
 	}
-	return user, nil
+
 }
 
 func QueryUserByName(name string) (user User, err error) {

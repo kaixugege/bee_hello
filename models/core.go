@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"github.com/astaxie/beego/logs"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -29,16 +30,21 @@ func (db *DB) Commit() {
 }
 
 func NewDB() *DB {
+	if db == nil {
+		logs.Debug("db is nil on NewDb.")
+		return nil
+	}
 	return &DB{db: db}
 }
 
 func init() {
+	var err error
 	// 创建data目录,0777代表文件权限
 	if err := os.MkdirAll("data", 0777); err != nil {
 		panic("failed to connect database," + err.Error())
 	}
 	//打开数据库，并复制给db变量，data/data.db数据文件路径
-	db, err := gorm.Open("sqlite3", "data/data.db")
+	db, err = gorm.Open("sqlite3", "data/data.db")
 	//存在错误，则程序退出，panic是类似于java的RuntimeException错误
 	fmt.Println("err", err)
 	if err != nil {

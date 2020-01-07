@@ -15,8 +15,10 @@ type UserController struct {
 
 // @router /login [post]
 func (c *UserController) Login() {
+
 	email := c.GetMustString("email", "邮箱不能为空！")
 	pwd := c.GetMustString("password", "密码不能为空！")
+	logs.Debug("email", email, "pwd", pwd)
 	var (
 		user models.User
 		err  error
@@ -26,6 +28,7 @@ func (c *UserController) Login() {
 	}
 	c.SetSession(SESSION_USER_KEY, user)
 	c.JSONOk("登陆成功", "/")
+	logs.Debug("登陆成功", email, pwd)
 }
 
 func (ctx *BaseController) Abort500(err error) {

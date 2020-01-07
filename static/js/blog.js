@@ -111,7 +111,6 @@ layui.define(['element', 'form', 'laypage', 'jquery', 'laytpl', 'sysn'], functio
 
     //登陆
     form.on('submit(login)', function (fromdata) {
-        alert(123123123)
         sysn.post("/login", fromdata.field)
 
         // .setTimeout(5000)
